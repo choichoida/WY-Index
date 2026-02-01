@@ -110,85 +110,105 @@ export const RegionSelector = ({ onRegionSelect }) => {
 
     // 공통 셀렉트 스타일 (44px 최소 높이로 모바일 터치 최적화)
     const selectClassName = `
-        w-full p-3 min-h-[44px] text-base
-        border border-gray-300 rounded-lg
-        bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-        disabled:bg-gray-100 disabled:cursor-not-allowed
+        w-full p-3 min-h-[52px] text-base font-medium
+        border border-slate-200 rounded-xl
+        bg-slate-50 text-slate-900
+        focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
+        hover:border-primary-300 transition-all duration-200
+        disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed
+        appearance-none
     `.trim();
 
+    const labelClassName = "block text-sm font-semibold text-slate-700 mb-2 ml-1";
+
     return (
-        <div className="p-4 bg-white rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">지역 선택</h2>
+        <div className="p-8 bg-white rounded-2xl">
+            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 text-lg">📍</span>
+                지역 선택
+                <span className="ml-auto text-xs font-normal text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                    Step by Step
+                </span>
+            </h2>
 
             {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                    {error}
+                <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm flex items-start">
+                    <span className="mr-2">⚠️</span>
+                    <span className="flex-1">{error}</span>
                     <button
                         onClick={() => setError(null)}
-                        className="ml-2 underline"
+                        className="ml-2 text-red-400 hover:text-red-700 font-medium"
                     >
                         닫기
                     </button>
                 </div>
             )}
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Step 1: 시도 선택 */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="relative group">
+                    <label className={labelClassName}>
                         시/도
                     </label>
-                    <select
-                        className={selectClassName}
-                        value={selectedSido?.code || ''}
-                        onChange={(e) => {
-                            const sido = sidoList.find(s => s.code === e.target.value);
-                            setSelectedSido(sido || null);
-                        }}
-                        disabled={loading.sido}
-                    >
-                        <option value="">
-                            {loading.sido ? '불러오는 중...' : '시/도 선택'}
-                        </option>
-                        {sidoList.map((sido) => (
-                            <option key={sido.code} value={sido.code}>
-                                {sido.name}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="relative">
+                        <select
+                            className={selectClassName}
+                            value={selectedSido?.code || ''}
+                            onChange={(e) => {
+                                const sido = sidoList.find(s => s.code === e.target.value);
+                                setSelectedSido(sido || null);
+                            }}
+                            disabled={loading.sido}
+                        >
+                            <option value="">시/도를 선택하세요</option>
+                            {sidoList.map((sido) => (
+                                <option key={sido.code} value={sido.code}>
+                                    {sido.name}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            ▼
+                        </div>
+                    </div>
                 </div>
 
                 {/* Step 2: 시군구 선택 */}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div className="relative group">
+                    <label className={labelClassName}>
                         시/군/구
                     </label>
-                    <select
-                        className={selectClassName}
-                        value={selectedSigungu?.code || ''}
-                        onChange={(e) => {
-                            const sigungu = sigunguList.find(s => s.code === e.target.value);
-                            setSelectedSigungu(sigungu || null);
-                        }}
-                        disabled={!selectedSido || loading.sigungu}
-                    >
-                        <option value="">
-                            {loading.sigungu ? '불러오는 중...' : '시/군/구 선택'}
-                        </option>
-                        {sigunguList.map((sigungu) => (
-                            <option key={sigungu.code} value={sigungu.code}>
-                                {sigungu.name}
+                    <div className="relative">
+                        <select
+                            className={selectClassName}
+                            value={selectedSigungu?.code || ''}
+                            onChange={(e) => {
+                                const sigungu = sigunguList.find(s => s.code === e.target.value);
+                                setSelectedSigungu(sigungu || null);
+                            }}
+                            disabled={!selectedSido || loading.sigungu}
+                        >
+                            <option value="">
+                                {loading.sigungu ? '불러오는 중...' : '시/군/구를 선택하세요'}
                             </option>
-                        ))}
-                    </select>
+                            {sigunguList.map((sigungu) => (
+                                <option key={sigungu.code} value={sigungu.code}>
+                                    {sigungu.name}
+                                </option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            ▼
+                        </div>
+                    </div>
                 </div>
 
                 {/* Step 3: 읍면동 선택 (데이터가 있는 경우만 표시) */}
-                {emdList.length > 0 && (
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            읍/면/동
-                        </label>
+                <div className={`relative group transition-opacity duration-300 ${!selectedSigungu ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+                    <label className={labelClassName}>
+                        읍/면/동 <span className="text-xs font-normal text-slate-400 ml-1">(선택)</span>
+                    </label>
+                    <div className="relative">
                         <select
                             className={selectClassName}
                             value={selectedEmd?.code || ''}
@@ -196,10 +216,10 @@ export const RegionSelector = ({ onRegionSelect }) => {
                                 const emd = emdList.find(s => s.code === e.target.value);
                                 setSelectedEmd(emd || null);
                             }}
-                            disabled={loading.emd}
+                            disabled={loading.emd || !selectedSigungu}
                         >
                             <option value="">
-                                {loading.emd ? '불러오는 중...' : '읍/면/동 선택'}
+                                {loading.emd ? '불러오는 중...' : (emdList.length > 0 ? '읍/면/동을 선택하세요' : '읍면동 없음')}
                             </option>
                             {emdList.map((emd) => (
                                 <option key={emd.code} value={emd.code}>
@@ -207,8 +227,11 @@ export const RegionSelector = ({ onRegionSelect }) => {
                                 </option>
                             ))}
                         </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            ▼
+                        </div>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

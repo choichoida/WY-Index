@@ -5,7 +5,24 @@ export default {
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                sans: ['Pretendard', 'sans-serif'],
+            },
+            colors: {
+                primary: {
+                    50: '#eff6ff',
+                    100: '#dbeafe',
+                    500: '#3b82f6',
+                    600: '#2563eb',
+                    700: '#1d4ed8',
+                },
+                secondary: {
+                    500: '#64748b',
+                    600: '#475569',
+                }
+            }
+        },
     },
     plugins: [],
 }
